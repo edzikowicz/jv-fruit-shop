@@ -5,6 +5,9 @@ import java.util.Map;
 public class ReportGeneratorImpl implements ReportGenerator {
     @Override
     public String generateReport(Map<String, Integer> storage) {
+        if (storage.isEmpty()) {
+            throw new RuntimeException("Storage is empty");
+        }
         if (storage.get("fruit") == null) {
             throw new RuntimeException("Fruit not found" + storage.get("fruit"));
         }

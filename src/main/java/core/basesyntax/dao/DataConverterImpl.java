@@ -7,10 +7,11 @@ public class DataConverterImpl implements DataConverter {
     @Override
     public List<FruitTransaction> convertToTransaction(List<String> input) {
         if (input == null || input.isEmpty()) {
-            return null;
+            throw new RuntimeException("Input list is empty");
         }
         return input.stream()
                 .skip(1)
+                .filter(l -> !l.isBlank())
                 .map(this::getFromCsvFile)
                 .toList();
     }
@@ -18,16 +19,23 @@ public class DataConverterImpl implements DataConverter {
     public FruitTransaction getFromCsvFile(String input) {
         String[] fields = input.split(",");
         if (fields.length != 3) {
-            throw new IllegalArgumentException("Invalid CSV File: " + input);
+            throw new RuntimeException("Invalid CSV File: " + input);
         }
-        FruitTransaction fruitTransaction = new FruitTransaction();
-        fruitTransaction.setOperation(FruitTransaction.Operation.fromCode(fields[0]));
-        fruitTransaction.setFruit(fields[1]);
+        String operationRaw = fields[0].trim();
+        String fruit = fields[1].trim();
+        String quantityRaw = fields[2].trim();
 
-        if (Integer.parseInt(fields[2]) < 0) {
-            throw new RuntimeException("Quantity must be a positive: " + fields[2]);
+        int quantity;
+        try {
+            quantity = Integer.parseInt(quantityRaw);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(
+                    "Invalid quantity in line: " + input, e);
         }
-        fruitTransaction.setQuantity(Integer.parseInt(fields[2]));
-        return fruitTransaction;
+
+        FruitTransaction.Operation operation =
+                FruitTransaction.Operation.fromCode(operationRaw);
+
+        return new FruitTransaction(operation, fruit, quantity);
     }
 }

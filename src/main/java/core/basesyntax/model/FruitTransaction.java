@@ -5,7 +5,7 @@ public class FruitTransaction {
     private String fruit;
     private int quantity;
 
-    FruitTransaction(Operation operation, String fruit, int quantity) {
+    public FruitTransaction(Operation operation, String fruit, int quantity) {
         this.operation = operation;
         this.fruit = fruit;
         this.quantity = quantity;
@@ -36,7 +36,11 @@ public class FruitTransaction {
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        if (quantity >= 0) {
+            this.quantity = quantity;
+        } else {
+            throw new RuntimeException("Quantity must be greater than or equal to 0");
+        }
     }
 
     public enum Operation {
@@ -56,6 +60,10 @@ public class FruitTransaction {
         }
 
         public static Operation fromCode(String code) {
+            if (code == null || code.isEmpty()) {
+                throw new RuntimeException("Operation code is null or empty");
+            }
+
             for (Operation operation : Operation.values()) {
                 if (operation.getCode().equals(code)) {
                     return operation;

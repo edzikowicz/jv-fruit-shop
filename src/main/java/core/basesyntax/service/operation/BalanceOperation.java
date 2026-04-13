@@ -7,6 +7,12 @@ public class BalanceOperation implements OperationHandler {
 
     @Override
     public void handleOperation(FruitTransaction transaction, Map<String, Integer> storage) {
+        if (transaction == null) {
+            throw new RuntimeException("Transaction is null");
+        }
+        if (storage == null || storage.isEmpty()) {
+            throw new RuntimeException("Storage is null");
+        }
         if (transaction.getFruit() == null || transaction.getFruit().isEmpty()) {
             throw new RuntimeException("Fruit is null or empty" + transaction.getFruit());
         }

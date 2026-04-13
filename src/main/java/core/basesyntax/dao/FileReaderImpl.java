@@ -9,6 +9,9 @@ public class FileReaderImpl implements FileReader {
 
     @Override
     public List<String> read(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            throw new RuntimeException("File name is null or empty");
+        }
         try {
             return Files.readAllLines(Paths.get(fileName));
         } catch (IOException e) {
